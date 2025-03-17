@@ -1,22 +1,48 @@
 import { useEffect, useState } from "react";
 import Pagination from "./Pagination";
 import NewsCard from "./NewsCard";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchTopHeadlines } from "../features/newsSlice";
+import { fetchNewsByCategory } from "../utils/newsApi";
 import StatusMessage from "./StatusMessage";
 import Heading from "./Heading";
 import PropTypes from "prop-types";
+import { menuItems } from "../utils";
 
 const PaginationNewsList = ({ title }) => {
-  const dispatch = useDispatch();
-  const { articles, loading, error } = useSelector((state) => state.news);
+  const validCategories = menuItems
+    .map((item) => item.name.toLowerCase())
+    .filter((name) => name !== "home" && name !== "news");
+
+  const extractedCategory = title.split("in")[1]?.trim().toLowerCase() || "";
+  const category = validCategories.includes(extractedCategory)
+    ? extractedCategory
+    : "";
+
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 5;
   const totalPages = Math.ceil(articles.length / articlesPerPage);
 
   useEffect(() => {
-    dispatch(fetchTopHeadlines());
-  }, [dispatch]);
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        console.log(category);
+
+        const fetchedArticles = await fetchNewsByCategory(category);
+        setArticles(fetchedArticles);
+      } catch (err) {
+        setError(err.message);
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [category]);
 
   const onPageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -36,13 +62,19 @@ const PaginationNewsList = ({ title }) => {
   return (
     <div
       id="news-pagination-container"
-      className="container mx-auto sm:pt-16 sm:mb-20 pb-16 sm:pb-0 sm:px-5 xl:w-[90%]"
+      className="container mx-auto sm:pt-16 sm:mb-20 py-16 sm:pb-0 sm:px-5 xl:w-[90%]"
     >
       <StatusMessage loading={loading} error={error} />
       <Heading title={title} section noChevron />
       <div className="xl:w-[80%] mx-auto">
         {currentArticle.map((article, index) => (
-          <NewsCard key={index} article={article} image row />
+          <NewsCard
+            key={index}
+            article={article}
+            category={category}
+            image
+            row
+          />
         ))}
         <Pagination
           currentPage={currentPage}

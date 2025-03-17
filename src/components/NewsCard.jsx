@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { BsClock } from "react-icons/bs";
 import clsx from "clsx";
-import { formatDate, getHoursAgo } from "../utils";
+import { formatDate, getHoursAgo, normalizeTitle } from "../utils";
 import { Link } from "react-router-dom";
 
 const NewsCard = ({
@@ -16,7 +16,7 @@ const NewsCard = ({
   return (
     <div
       className={clsx(
-        "relative overflow-hidden flex px-3 sm:px-0",
+        "relative overflow-hidden flex-col flex sm:px-0",
         { "sm:flex-col": !row, "sm:flex-row mb-6": row },
         featured
           ? {
@@ -27,8 +27,8 @@ const NewsCard = ({
         featured
           ? "md:col-span-3 lg:col-span-4 xl:col-span-3 flex-col"
           : {
-              "flex-row": !inline,
-              "flex-col": inline,
+              "flex-row": !inline && !row,
+              "flex-col": inline && !row,
             }
       )}
     >
@@ -37,36 +37,44 @@ const NewsCard = ({
           src={article.urlToImage}
           alt={article.title}
           className={clsx(
-            "object-cover self-center mr-2 sm:mr-0 h-full",
+            "object-cover self-center mr-0 sm:mr-0",
             !featured && {
-              "pr-4 w-[400px] sm:h-[250px]": row,
-              "sm:h-40 sm:w-full": !row,
+              "w-full h-[250px] md:w-[300px] sm:h-[200px] md:pr-3": row,
+              "sm:h-40 sm:w-full px-2 md:px-0": !row,
             },
             featured
-              ? "object-contain md:w-[50%]"
+              ? "object-contain md:w-[50%] md:h-full"
               : {
-                  "h-20 w-[30%]": !inline,
-                  "h-40 w-full": inline,
+                  "h-40 w-[40%]": !inline,
+                  "h-full w-full": inline,
                 },
             inline && "sm:h-90 block"
           )}
         />
       )}
 
-      <div className={clsx("flex flex-col flex-grow", featured ? "px-3 " : "")}>
+      <div
+        className={clsx(
+          "flex flex-col flex-grow px-2",
+          featured ? "md:px-2" : "md:px-0"
+        )}
+      >
         <Link
           to={
             category
-              ? `/news/${category}/${article.title
+              ? `/news/${category}/${normalizeTitle(article)
                   .toLowerCase()
                   .replace(/[^\w-]+/g, "-")}`
-              : `/news/${article.title.toLowerCase().replace(/[^\w-]+/g, "-")}`
+              : `/news/${normalizeTitle(article)
+                  .toLowerCase()
+                  .replace(/[^\w-]+/g, "-")}`
           }
         >
           <h2
             className={clsx(
               "font-semibold hover:underline",
-              featured ? "text-4xl" : "text-lg"
+              featured ? "text-4xl" : "text-lg",
+              inline && "md:text-2xl mt-4"
             )}
           >
             {article.title}

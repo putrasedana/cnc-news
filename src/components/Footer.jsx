@@ -16,8 +16,8 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white py-6 px-4 lg:px-16">
-      <div className="flex flex-col lg:items-center flex-wrap lg:flex-row gap-x-48 border-b-2 border-gray-500 pb-6">
+    <footer className="bg-gray-900 text-white py-6 px-6">
+      <div className="flex flex-col lg:items-center flex-wrap lg:flex-row lg:justify-center gap-x-48 border-b-2 border-gray-500 pb-6">
         {/* Left */}
         <div className="mb-6 sm:mb-2">
           <div className="flex flex-col justify-center sm:flex-row sm:items-center sm:justify-start">

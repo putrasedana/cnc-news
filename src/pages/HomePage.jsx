@@ -8,7 +8,7 @@ import NewsListColumns from "../components/NewsListColumns";
 const HomePage = () => {
   return (
     <div>
-      <NewsGridMain title={""} />
+      <NewsGridMain title="" />
       <NewsCardInline title="From the BBC News" />
       <NewsList title="More News" />
 

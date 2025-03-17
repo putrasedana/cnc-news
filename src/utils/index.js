@@ -12,6 +12,12 @@ export const getHoursAgo = (publishedAt) => {
   return diffInHours === 0 ? "Just now" : `${diffInHours} hours ago`;
 };
 
+export const normalizeTitle = (article) => {
+  if (!article || !article.title) return "";
+  const titleParts = article.title.split(" - ");
+  return titleParts[0];
+};
+
 export const menuItems = [
   { name: "Home", path: "/" },
   { name: "News", path: "/news" },

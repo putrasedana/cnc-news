@@ -1,24 +1,33 @@
+import { useEffect, useState } from "react";
 import NewsCard from "./NewsCard";
 import PropTypes from "prop-types";
 import Heading from "./Heading";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { fetchNewsByCategory } from "../features/newsSlice";
+import { fetchNewsByCategory } from "../utils/newsApi";
 import StatusMessage from "./StatusMessage";
 
 const NewsListCol = ({ title }) => {
-  const dispatch = useDispatch();
-  const { categoryArticles, loading, error } = useSelector(
-    (state) => state.news
-  );
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (title) {
-      dispatch(fetchNewsByCategory(title.toLowerCase()));
-    }
-  }, [dispatch, title]);
+    if (!title) return;
 
-  const articles = categoryArticles[title.toLowerCase()] || [];
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const fetchedArticles = await fetchNewsByCategory(title.toLowerCase());
+        setArticles(fetchedArticles);
+      } catch (err) {
+        setError(err.message);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [title]);
 
   return (
     <div>

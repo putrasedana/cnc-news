@@ -20,7 +20,7 @@ const Sidebar = () => {
     setActive(currentItem ? currentItem.name : "");
   }, [location.pathname]);
 
-  const handleToggle = (isSearchButton) => {
+  const handleToggleSidebar = (isSearchButton) => {
     setIsVisible(!isVisible);
 
     if (isSearchButton) {
@@ -46,22 +46,28 @@ const Sidebar = () => {
       )}
 
       <div className="flex items-center gap-4 gap-x-10 md:gap-x-6">
-        <button onClick={() => handleToggle(false)} className="cursor-pointer">
+        <button
+          onClick={() => handleToggleSidebar(false)}
+          className="cursor-pointer"
+        >
           <BiMenu className="w-8 h-8 sm:h-6 text-white " />
         </button>
-        <button onClick={() => handleToggle(true)} className="cursor-pointer">
+        <button
+          onClick={() => handleToggleSidebar(true)}
+          className="cursor-pointer"
+        >
           <BiSearch className="w-8 h-8 sm:h-6 text-white " />
         </button>
 
         <aside
           className={clsx(
             isVisible ? "" : "invisible",
-            `w-[25%] min-h-screen bg-white p-4 border-r-2 fixed z-20 top-0 left-0`
+            `w-full md:w-[60%] lg:w-[40%] xl:w-[25%] min-h-screen bg-white p-4 border-r-2 fixed z-20 top-0 left-0`
           )}
         >
           <div className="w-full flex justify-end mb-5">
             <button
-              onClick={() => handleToggle(false)}
+              onClick={() => handleToggleSidebar(false)}
               className="cursor-pointer hover:text-white hover:bg-slate-900 p-1 rounded-sm"
             >
               <CgClose size={30} />
@@ -78,7 +84,10 @@ const Sidebar = () => {
               ref={searchInputRef}
             />
             <button
-              onClick={handleSearch}
+              onClick={() => {
+                handleSearch();
+                handleToggleSidebar(false);
+              }}
               className="bg-slate-900 text-white p-2 rounded-r-sm hover:bg-slate-700 transition cursor-pointer"
             >
               <BiSearch size={26} />
